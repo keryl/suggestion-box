@@ -34,13 +34,19 @@ class User(db.Model):
     def gen_password(self, password):
         return generate_password_hash(password)
 
-# login route
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
+# define routes
+
+# home route
 
 @app.route("/")
 def home():
     is_logged_in = 'user_id' in session
     if is_logged_in:
-        return render_template('home_logged_in.html', title='Home')
+        user = User.query.filter_by(id=session['user_id']).first()
+        return render_template('home_logged_in.html', title='Home', user=user)
     else:
         return render_template('home_logged_out.html', title='Home')
 
@@ -52,7 +58,20 @@ def signup():
 
     if request.method == 'POST':
         # if POST, add user to database
-        pass
+        app.logger.debug(request.form)
+        user = User(username=request.form['username'], password=request.form['password'])
+        db.session.add(user)
+        try:
+            db.session.commit()
+
+            # then redirect to login page
+
+            flash('You have successfully signed up! Please login!')
+
+            return redirect("/login")
+        except IntegrityError:
+            error = 'A user already exists with that username'
+
     # if GET, display signup page
     return render_template('signup.html', title='Sign Up', error=error)
 
@@ -65,7 +84,17 @@ def login():
     if request.method == 'POST':
         # if POST, check if an existing user exists in the DB
         # if so, log them in i.e.
-        pass
+
+        user = User.query.filter_by(username=request.form['username']).first()
+        if user and user.check_password(request.form['password']):
+            session["user_id"] = user.id
+
+            flash('You were successfully logged in')
+
+            return redirect("/")
+        else:
+            error = 'Invalid username/password'
+
     # if GET, display login page
     return render_template('login.html', title='Login', error=error)
 
