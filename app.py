@@ -1,6 +1,40 @@
 from flask import Flask, request, session, render_template, redirect, flash
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import IntegrityError
+from werkzeug import generate_password_hash, check_password_hash
+
+# create app
 
 app = Flask(__name__)
+
+# set sqlite connection url in app config
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///suggestion-box.db'
+
+# set the secret key
+
+app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
+
+# create db
+
+db = SQLAlchemy(app)
+
+# user db table class
+
+class User(db.Model):
+    __tablename__ = "users"
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True)
+    password = db.Column(db.String(120))
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = self.gen_password(password)
+
+    def gen_password(self, password):
+        return generate_password_hash(password)
+
+# login route
 
 @app.route("/")
 def home():
