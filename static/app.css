@@ -5,11 +5,3 @@ body{
 .align-center{
   text-align: center;
 }
-
-.heading{
-  font-size: 18px;
-  font-style: bold;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 5px;
-  margin-bottom: 10px;
-}
