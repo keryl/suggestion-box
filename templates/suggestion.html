@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div>
+
+  <h4>{{suggestion.title}}</h4>
+  <p>{{suggestion.description}}</p>
+
+  <br>
+
+  <a href="/new-vote/{{suggestion.id}}/1" class='btn btn-default btn-large btn-success'>Up vote ({{up_votes|length}})</a>
+  <a href="/new-vote/{{suggestion.id}}/0"  class='btn btn-default btn-large btn-danger'>Down vote ({{down_votes|length}})</a>
+
+  <br>
+  <hr>
+
+  <h5>Comments</h5>
+
+  <ul>
+  {% for comment in comments %}
+    <li>{{comment.content}}</li>
+  {% endfor %}
+  </ul>
+
+  <form action="/new-comment/{{suggestion.id}}" method="post">
+
+    <textarea name="content" class="form-control"></textarea>
+    <br>
+    <button type="submit" class="btn btn-default btn-block">Add Comment</button>
+
+  </form>
+
+</div>
+
+{% endblock body %}
