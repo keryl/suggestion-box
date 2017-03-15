@@ -2,6 +2,20 @@
 
 {% block body %}
 
-<legend>SUGGESTIONS</legend>
+<div class="row-fluid heading">
+  <div class="col-sm-10">
+    SUGGESTIONS
+  </div>
+  <div class="col-sm-2">
+    <a href="/new-suggestion" class="btn btn-default btn-block btn-sm">New</a>
+  </div>
+  <div class="clearfix"></div>
+</div>
+
+<ul class="list-group">
+{% for suggestion in suggestions %}
+  <li class="list-group-item">{{suggestion.title}} <a href="/suggestions/{{suggestion.id}}" class="pull-right">view</a></li>
+{% endfor %}
+</ul>
 
 {% endblock body %}
